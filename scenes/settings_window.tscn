@@ -41,6 +41,14 @@ Higher values affect performance"
 mouse_filter = 1
 text = "Anti-Aliasing"
 
+[node name="UDP_INPUT_PORT_label" type="Label" parent="columns/labels_row"]
+layout_mode = 2
+text = "UDP Input Port"
+
+[node name="UDP_OUTPUT_PORT_label2" type="Label" parent="columns/labels_row"]
+layout_mode = 2
+text = "UDP Output Port"
+
 [node name="options_row" type="VBoxContainer" parent="columns"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -61,8 +69,20 @@ layout_mode = 2
 tooltip_text = "Multisample antialiasing
 Higher values affect performance"
 
+[node name="UDP_input_port" type="SpinBox" parent="columns/options_row"]
+layout_mode = 2
+tooltip_text = "Sets the UDP input port"
+max_value = 100000.0
+
+[node name="UDP_output_port" type="SpinBox" parent="columns/options_row"]
+layout_mode = 2
+tooltip_text = "Sets the UDP output port"
+max_value = 100000.0
+
 [connection signal="close_requested" from="." to="." method="_on_close_requested"]
 [connection signal="size_changed" from="." to="." method="_on_size_changed"]
 [connection signal="toggled" from="columns/options_row/Vsync" to="." method="_on_vsync_toggled"]
 [connection signal="value_changed" from="columns/options_row/FPS" to="." method="_on_fps_value_changed"]
 [connection signal="item_selected" from="columns/options_row/MSAA" to="." method="_on_msaa_item_selected"]
+[connection signal="value_changed" from="columns/options_row/UDP_input_port" to="." method="_on_udp_input_port_value_changed"]
+[connection signal="value_changed" from="columns/options_row/UDP_output_port" to="." method="_on_udp_output_port_value_changed"]

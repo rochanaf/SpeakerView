@@ -14,6 +14,8 @@ var msaa_3d = [[Viewport.MSAA_DISABLED, "Disabled"],
 			   [Viewport.MSAA_4X, "4X"],
 			   [Viewport.MSAA_8X, "8X"]]
 var anti_aliasing: Viewport.MSAA = Viewport.MSAA_2X
+var udp_input_port: int = DEFAULT_INPUT_PORT
+var udp_output_port: int = DEFAULT_OUTPUT_PORT
 
 const SG_SCALE: float = 10.0
 const MAX_ELEVATION = 89.0
@@ -24,6 +26,8 @@ const ZOOM_RANGE: float = MAX_ZOOM - MIN_ZOOM
 const ZOOM_CURVE: float = 0.7
 const INVERSE_ZOOM_CURVE: float = 1.0 / ZOOM_CURVE
 const MOUSE_DRAG_SPEED: float = 0.1
+const DEFAULT_INPUT_PORT: int = 18023
+const DEFAULT_OUTPUT_PORT: int = 18022
 
 var selected_speaker_number: int = 0
 var reset_sources_position: bool = false
@@ -433,7 +437,7 @@ func load_settings():
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	
 	Engine.max_fps = fps_max
-	
+		
 	for msaa in msaa_3d:
 		if anti_aliasing in msaa:
 			get_viewport().set_msaa_3d(msaa[0])
@@ -441,12 +445,13 @@ func load_settings():
 	DebugMenu.update_settings_label()
 
 func save_settings():
+	print('save_settings',udp_input_port)
 	var config = ConfigFile.new()
 	
 	config.set_value("graphics", "vsync", vsync)
 	config.set_value("graphics", "fps", fps_max)
 	config.set_value("graphics", "anti_aliasing", anti_aliasing)
-	
+		
 	config.save("user://settings.cfg")
 
 func set_SV_anti_aliasing(msaa: Viewport.MSAA) -> void:

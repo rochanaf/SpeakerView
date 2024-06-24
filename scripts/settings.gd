@@ -6,6 +6,8 @@ var speakerview_node
 var fps_node
 var vsync_node
 var msaa_node
+var udp_input_port_node
+var udp_output_port_node
 var columns_node
 
 
@@ -15,7 +17,7 @@ func _ready():
 	var new_scale_factor: float = 1.0
 	
 	visible = true
-	min_size = Vector2i(400, 180)
+	min_size = Vector2i(400, 250)
 	size = Vector2(400 * new_scale_factor, 180 * new_scale_factor)
 	position = Vector2(get_parent().get_viewport().get_window().position.x + get_parent().get_viewport().get_window().size.x / 2.0 - size.x / 2.0,
 		get_parent().get_viewport().get_window().position.y + get_parent().get_viewport().get_window().size.y / 2.0 - size.y / 2.0)
@@ -32,6 +34,8 @@ func _on_size_changed():
 	vsync_node = $columns/options_row/Vsync
 	fps_node = $columns/options_row/FPS
 	msaa_node = $columns/options_row/MSAA
+	udp_input_port_node = $columns/options_row/UDP_input_port
+	udp_output_port_node = $columns/options_row/UDP_output_port
 	columns_node = $columns
 	
 	columns_node.position = Vector2(MARGIN_SIZE, MARGIN_SIZE)
@@ -46,6 +50,9 @@ func _on_size_changed():
 		msaa_node.add_item(speakerview_node.msaa_3d[index][1])
 		if speakerview_node.anti_aliasing in speakerview_node.msaa_3d[index]:
 			msaa_node.select(index)
+			
+	udp_input_port_node.value = speakerview_node.udp_input_port
+	udp_output_port_node.value = speakerview_node.udp_output_port
 
 func _on_fps_value_changed(value):
 	Engine.max_fps = value
@@ -62,3 +69,9 @@ func _on_vsync_toggled(button_pressed):
 func _on_msaa_item_selected(index):
 	var msaa_selected: Viewport.MSAA = speakerview_node.msaa_3d[index][0]
 	speakerview_node.set_SV_anti_aliasing(msaa_selected)
+
+func _on_udp_input_port_value_changed(value):
+	speakerview_node.udp_input_port = value
+
+func _on_udp_output_port_value_changed(value):
+	speakerview_node.udp_output_port = value

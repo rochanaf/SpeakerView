@@ -445,7 +445,6 @@ func load_settings():
 	DebugMenu.update_settings_label()
 
 func save_settings():
-	print('save_settings',udp_input_port)
 	var config = ConfigFile.new()
 	
 	config.set_value("graphics", "vsync", vsync)

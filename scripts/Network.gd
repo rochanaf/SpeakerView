@@ -1,12 +1,15 @@
 extends Node
 
+const DEFAULT_INPUT_PORT: int = 18023
+const DEFAULT_OUTPUT_PORT: int = 18022
+
 var udp_peer: PacketPeerUDP
 var udp_server: PacketPeerUDP
 
 var SG_IP: String = "127.0.0.1"
-var SG_port: int = 18023
+var SG_port: int = DEFAULT_INPUT_PORT
 var speakerview_IP: String = "127.0.0.1"
-var speakerview_port: int = 18022
+var speakerview_port: int = DEFAULT_OUTPUT_PORT
 
 var packet: PackedByteArray
 var message: String
@@ -25,19 +28,34 @@ func _ready():
 	speakers_node = get_node("/root/SpeakerView/Speakers")
 	
 	# Listen to SpatGris
-	udp_peer = PacketPeerUDP.new()
-	udp_peer.connect_to_host(SG_IP, SG_port)
+	open_input_connection()
 	# Send to SpatGris
-	udp_server = PacketPeerUDP.new()
-	udp_server.bind(speakerview_port, speakerview_IP)
+	open_output_connection()
 	
 	json_data = JSON.new()
 
+func open_input_connection():
+	udp_peer = PacketPeerUDP.new()
+	udp_peer.connect_to_host(SG_IP, SG_port)
+	
+func open_output_connection():
+	udp_server = PacketPeerUDP.new()
+	udp_server.bind(speakerview_port, speakerview_IP)
+
+func close_input_connection():
+	if udp_peer.is_socket_connected():
+		udp_peer.close()
+	
+func close_output_connection():
+	if udp_server.is_bound():
+		udp_server.close()
+	
 func _physics_process(_delta):
 	if speakerview_node.is_started_by_SG:
 		listen_to_UDP()
 
 func send_UDP():
+	print('send_UDP',speakerview_port)
 	if speakerview_node.is_started_by_SG:
 		var json_dict_to_send = {"quitting":speakerview_node.quitting,
 								"winPos":get_viewport().position,
@@ -77,3 +95,13 @@ func listen_to_UDP():
 					speakers_node.set_speakers_info(json_data.data)
 			elif typeof(json_data.data) == Variant.Type.TYPE_DICTIONARY:
 				speakerview_node.update_app_data(json_data.data)
+
+func _on_udp_input_port_value_changed(value):
+	SG_port = value
+	close_input_connection()
+	open_input_connection()	
+
+func _on_udp_output_port_value_changed(value):
+	speakerview_port = value
+	close_output_connection()
+	open_output_connection()

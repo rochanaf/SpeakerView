@@ -9,10 +9,11 @@ var msaa_node
 var udp_input_port_node
 var udp_output_port_node
 var columns_node
-
+var network_node
 
 func _ready():
 	speakerview_node = get_node("/root/SpeakerView")
+	network_node = get_node("/root/SpeakerView/Network")
 	
 	var new_scale_factor: float = 1.0
 	
@@ -72,6 +73,8 @@ func _on_msaa_item_selected(index):
 
 func _on_udp_input_port_value_changed(value):
 	speakerview_node.udp_input_port = value
+	network_node._on_udp_input_port_value_changed(value)
 
 func _on_udp_output_port_value_changed(value):
 	speakerview_node.udp_output_port = value
+	network_node._on_udp_output_port_value_changed(value)
